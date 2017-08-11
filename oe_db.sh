@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "DBUS (c) ownego"
-if [ -e config.json ]
+if [[ -e config.json ]]
 then
     tput setaf 2
     echo "Configuration file found."
@@ -58,7 +58,7 @@ db_input() {
     echo ""
     read -p "Database backup cycle (days): " db_cycle
     sed -i 's/]//g' config.json
-    if [ $count -gt 0 ]
+    if [[ $count -gt 0 ]]
     then
         printf "," >> config.json
     fi
@@ -105,7 +105,7 @@ db_find_and_back_up() {
     for ((i=0; i<=count-1; i++));
     do
         db_name=$(jq -r --arg i "$i" '.[$i | tonumber].db_name' config.json)
-        if [ $db_name == $1 ]
+        if [[ $db_name == $1 ]]
         then
             echo "$1 found. Starting backup..."
             DB_NAME=$(jq -r --arg i "$i" '.[$i | tonumber].db_name' config.json)
@@ -128,7 +128,7 @@ db_modify() {
     for ((i=0; i<=count-1; i++));
     do
         db_name=$(jq -r --arg i "$i" '.[$i | tonumber].db_name' config.json)
-        if [ $db_name == $db_enter ]
+        if [[ $db_name == $db_enter ]]
         then
             echo "Found it. Deleting..."
             jq --arg i "$i" 'del(.[$i | tonumber])' config.json > tmp.json
@@ -143,7 +143,7 @@ db_modify() {
             found=0
         fi
     done
-    if [ $found -eq 0 ]
+    if [[ $found -eq 0 ]]
     then
         echo "Database not found. Creating..."
         echo "Enter database information: "
