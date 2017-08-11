@@ -36,7 +36,7 @@ This script take 3 options:
 
 `-a` to run backup progress for all databases defined in config file.
 
-`-b database_name` to run backup progress for one specific database (must be defined in config).
+`-d database_name` to run backup progress for one specific database (must be defined in config).
 
 Each database config entry has 4 properties:
 
