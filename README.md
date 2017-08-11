@@ -1,3 +1,6 @@
+### Introduction
+
+This script will help you to easily back up your MySQL database. It is especially helpful when use with `crontab` to automate backup progress. You can define a backup rotation scheme for each database.
 ### Instalation
 
 Require `mysqldump` and `jq`.
@@ -40,9 +43,8 @@ Each database config entry has 4 properties:
    *   Database name
    *   Database username
    *   Database password
-   *   Database backup cycle
+   *   Database backup cycle (days)
     
-
 ### Crontab usage
 
 Examples:
