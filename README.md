@@ -45,6 +45,8 @@ Each database config entry has 5 properties:
    *   Database password
    *   Database backup cycle (days)
    *   Database backup directory (where to save backups)
+   
+Configuration file is JSON formatted and can be easily manually configured or shared.
     
 ### Crontab usage
 
