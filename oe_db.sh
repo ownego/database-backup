@@ -26,7 +26,8 @@ start() {
     case $opt in
         1)  db_modify
             ;;
-        2)  exit
+        2)  echo "Bye!"
+            exit
             ;;
     esac
 }
@@ -57,28 +58,29 @@ db_input() {
     read -s -p "Database password: " db_password
     echo ""
     read -p "Database backup cycle (days): " db_cycle
+    read -p "Database backup directory: " db_dir
     sed -i 's/]//g' config.json
     if [[ $count -gt 0 ]]
     then
         printf "," >> config.json
     fi
-    jq -n "{\"db_name\": \"$1\", \"db_uname\": \"$db_uname\", \"db_password\": \"$db_password\", \"db_cycle\": \"$db_cycle\"}" >> config.json
+    jq -n "{\"db_name\": \"$1\", \"db_uname\": \"$db_uname\", \"db_password\": \"$db_password\", \"db_cycle\": \"$db_cycle\", \"db_dir\": \"$db_dir\"}" >> config.json
     echo "]" >> config.json
     jq '.' config.json
     start
 }
 
-# db_backup_one(db_name, db_user, db_password, db_cycle)
+# db_backup_one(db_name, db_user, db_password, db_cycle, db_dir)
 #
 # Run backup progress for one specific database.
 db_backup_one() {
-    FILE_LAST_MONTH=$1_backup.sql.`date --date="$4 days ago" +%Y_%m_%d_%H_%M`.gz
-    FILE=$1_backup.sql.`date +%Y_%m_%d_%H_%M`
+    FILE_LAST_MONTH=$5/$1_backup.sql.`date --date="$4 days ago" +%Y_%m_%d_%H_%M`.gz
+    FILE=$5/$1_backup.sql.`date +%Y_%m_%d_%H_%M`
     rm -rf ${FILE_LAST_MONTH}
     mysqldump --opt --user=$2 --password=$3 $1 > ${FILE}
     gzip $FILE
     tput setaf 2
-    echo "Backed up $1."
+    echo "Backed up $1 at $FILE."
     tput setaf 7
 }
 
@@ -93,7 +95,8 @@ db_backup_all() {
         DB_UNAME=$(jq -r --arg i "$i" '.[$i | tonumber].db_uname' config.json)
         DB_PASSWORD=$(jq -r --arg i "$i" '.[$i | tonumber].db_password' config.json)
         DB_CYCLE=$(jq -r --arg i "$i" '.[$i | tonumber].db_cycle' config.json)
-        db_backup_one $DB_NAME $DB_UNAME $DB_PASSWORD $DB_CYCLE
+        DB_DIR=$(jq -r --arg i "$i" '.[$i | tonumber].db_dir' config.json)
+        db_backup_one $DB_NAME $DB_UNAME $DB_PASSWORD $DB_CYCLE $DB_DIR
     done
 }
 
@@ -112,7 +115,8 @@ db_find_and_back_up() {
             DB_UNAME=$(jq -r --arg i "$i" '.[$i | tonumber].db_uname' config.json)
             DB_PASSWORD=$(jq -r --arg i "$i" '.[$i | tonumber].db_password' config.json)
             DB_CYCLE=$(jq -r --arg i "$i" '.[$i | tonumber].db_cycle' config.json)
-            db_backup_one $DB_NAME $DB_UNAME $DB_PASSWORD $DB_CYCLE
+            DB_DIR=$(jq -r --arg i "$i" '.[$i | tonumber].db_dir' config.json)
+            db_backup_one $DB_NAME $DB_UNAME $DB_PASSWORD $DB_CYCLE $DB_DIR
             return 0
         fi
     done
@@ -130,7 +134,7 @@ db_modify() {
         db_name=$(jq -r --arg i "$i" '.[$i | tonumber].db_name' config.json)
         if [[ $db_name == $db_enter ]]
         then
-            echo "Found it. Deleting..."
+            echo "$db_name found. Deleting..."
             jq --arg i "$i" 'del(.[$i | tonumber])' config.json > tmp.json
             rm -rf config.json
             mv tmp.json config.json

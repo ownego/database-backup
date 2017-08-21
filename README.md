@@ -38,12 +38,13 @@ This script take 3 options:
 
 `-d database_name` to run backup progress for one specific database (must be defined in config).
 
-Each database config entry has 4 properties:
+Each database config entry has 5 properties:
 
    *   Database name
    *   Database username
    *   Database password
    *   Database backup cycle (days)
+   *   Database backup directory (where to save backups)
     
 ### Crontab usage
 
