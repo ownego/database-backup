@@ -1,7 +1,7 @@
-### Introduction
+## Introduction
 
 This script will help you to easily back up your MySQL database. It is especially helpful when use with `crontab` to automate backup progress. You can define a backup rotation scheme for each database.
-### Instalation
+## Instalation
 
 Require `mysqldump` and `jq`.
 
@@ -28,7 +28,7 @@ cd database-backup
 bash oe_db.sh -c
 ```
 
-### Usage
+## Usage
 
 This script take 3 options:
 
@@ -48,7 +48,7 @@ Each database config entry has 5 properties:
    
 Configuration file is JSON formatted and can be easily manually configured or shared.
     
-### Crontab usage
+## Crontab usage
 
 Examples:
 
